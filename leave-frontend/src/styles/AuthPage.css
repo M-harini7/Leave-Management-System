@@ -1,0 +1,116 @@
+/* AuthPage.css */
+
+.auth-container {
+    height: 100vh;
+    width: 100vw;
+    background: linear-gradient(to right, #1e1e1e, #2c2c2c);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Segoe UI', sans-serif;
+    animation: fadeIn 1s ease-in;
+  }
+  
+  .auth-card {
+    width: 420px;
+    background: #2b2b2b;
+    padding: 35px;
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    border: 1px solid #bfa035;
+    animation: slideIn 0.6s ease-out;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .auth-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(191, 160, 53, 0.25);
+  }
+  
+  .auth-title {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #d4af37;
+    font-size: 24px;
+    font-weight: bold;
+    animation: fadeIn 0.6s ease;
+  }
+  
+  .auth-input {
+    width: 100%;
+    margin-bottom: 16px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #555;
+    background-color: #1c1c1c;
+    font-size: 15px;
+    color: #f5f5f5;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+  }
+  
+  .auth-input:focus {
+    outline: none;
+    border-color: #d4af37;
+    background-color: #2a2a2a;
+  }
+  
+  .auth-button {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(to right, #bfa035, #d4af37);
+    color: #1e1e1e;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    transition: background 0.4s ease;
+  }
+  
+  .auth-button:hover {
+    background: linear-gradient(to right, #a8892b, #d4af37);
+  }
+  
+  .auth-error {
+    color: #ff6b6b;
+    margin-top: 10px;
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  .auth-footer {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 14px;
+    color: #d4af37;
+    animation: fadeIn 0.6s ease;
+  }
+  
+  .auth-footer button {
+    background: none;
+    border: none;
+    outline: none;           /* Remove focus outline */
+    box-shadow: none;        /* Remove any shadow */
+    color: #ffde6a;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+  
+  .auth-footer button:hover {
+    color: #fff1b0;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes slideIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  
