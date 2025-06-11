@@ -73,11 +73,11 @@ const ManagerDashboard = () => {
       {/* Main Content */}
       <main className="flex-1 p-8 overflow-y-auto bg-white">
         {/* Header */}
-        <div className="flex justify-end items-center mb-8 border-b border-gray-200 pb-4 shadow-sm">
-        <h2 className="text-3xl font-bold capitalize tracking-wide">
+        <div className="flex justify-between items-center mb-8 border-b border-gray-200 pb-4 shadow-sm">
+          <h2 className="text-3xl font-bold capitalize tracking-wide">
             {activeTab.replace(/([A-Z])/g, ' $1')}
           </h2>
-            {/* User Info */}
+          <div className="flex items-center gap-6">
             <div className="flex items-center gap-3 text-right">
               <div className="w-10 h-10 rounded-full bg-yellow-500 text-gray-900 flex items-center justify-center font-bold text-lg select-none">
                 {getInitials(user.name)}
@@ -87,8 +87,6 @@ const ManagerDashboard = () => {
                 <p className="text-sm text-gray-500 capitalize">{user.role}</p>
               </div>
             </div>
-
-            {/* Logout Button */}
             <button
               className="bg-red-600 hover:bg-red-700 transition-colors text-white px-5 py-2 rounded-md shadow-md"
               onClick={() => {
@@ -98,7 +96,9 @@ const ManagerDashboard = () => {
             >
               Logout
             </button>
+          </div>
         </div>
+
 
         {/* Page Content */}
         {activeTab === 'teamMembers' && <TeamMembersPage />}

@@ -15,7 +15,7 @@ export const AppDataSource = new DataSource({
   port: 5432,
   username: 'postgres',
   password: '1234',
-  database: 'Leave',
+  database: 'Leave_management_system',
   synchronize: true, // auto create tables in dev
   logging: false,
   entities: [User,Role,Employee,Team,LeaveType,LeaveBalance,LeaveApproval,ApprovalFlow,LeaveRequest,Holiday], // add more later

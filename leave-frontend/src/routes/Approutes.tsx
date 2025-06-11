@@ -6,6 +6,7 @@ import ManagerDashboard from '../dashboards/ManagerDashboard';
 import TeamLeadDashboard from '../dashboards/TeamleadDashboard';
 import DeveloperDashboard from '../dashboards/DeveloperDashboard'; 
 import ProtectedRoute from '../components/ProtectedRoute';
+ // Adjust path if needed
 
 const AppRoutes = () => (
   <Routes>
@@ -56,6 +57,8 @@ const AppRoutes = () => (
         </ProtectedRoute>
       }
     />
+   
+
   </Routes>
 );
 

@@ -20,7 +20,7 @@ interface LeaveHistory {
   endDate: string;
   totalDays: number;
   reason: string;
-  status: string;
+  status: 'pending' | 'approved' | 'rejected' | 'cancelled';
 }
 
 type SortKey = 'startDate' | 'status' | null;
@@ -48,16 +48,29 @@ export default function LeaveDashboard() {
     fetchData();
   }, []);
 
-  // Filter and search logic
+  // Cancel handler
+  const handleCancel = async (id: number) => {
+    if (!window.confirm('Are you sure you want to cancel this leave request?')) return;
+    try {
+      await api.patch(`/leave-requests/${id}/cancel`);
+      const updatedHistory = history.map((item) =>
+        item.id === id ? { ...item, status: 'cancelled' as const } : item
+      );
+      setHistory(updatedHistory);
+    } catch (err) {
+      console.error('Failed to cancel leave request:', err);
+      alert('Unable to cancel. Please try again.');
+    }
+  };
+
+  // Filter and sort
   useEffect(() => {
     let filtered = [...history];
 
-    // Status filter
     if (statusFilter !== 'all') {
       filtered = filtered.filter((item) => item.status === statusFilter);
     }
 
-    // Search by reason or leave type
     if (searchTerm.trim()) {
       const lowerSearch = searchTerm.toLowerCase();
       filtered = filtered.filter(
@@ -67,7 +80,6 @@ export default function LeaveDashboard() {
       );
     }
 
-    // Sorting
     if (sortKey) {
       filtered.sort((a, b) => {
         let valA, valB;
@@ -102,7 +114,6 @@ export default function LeaveDashboard() {
 
   return (
     <div className="max-w-6xl mx-auto mt-10 px-4">
-
       {/* Leave Balances */}
       <div className="mb-10">
         <h3 className="text-2xl font-semibold mb-4 text-gray-700">Leave Balances</h3>
@@ -131,6 +142,7 @@ export default function LeaveDashboard() {
             <option value="approved">Approved</option>
             <option value="pending">Pending</option>
             <option value="rejected">Rejected</option>
+            <option value="cancelled">Cancelled</option>
           </select>
         </div>
 
@@ -152,13 +164,7 @@ export default function LeaveDashboard() {
           <table className="min-w-full bg-white shadow-md rounded-lg border border-gray-200">
             <thead className="bg-blue-100 text-gray-700 cursor-pointer">
               <tr>
-                <th
-                  className="px-4 py-2 text-left"
-                  onClick={() => handleSort(null)}
-                  title="No sorting"
-                >
-                  Type
-                </th>
+                <th className="px-4 py-2 text-left" onClick={() => handleSort(null)} title="No sorting">Type</th>
                 <th className="px-4 py-2 text-left" onClick={() => handleSort('startDate')}>
                   Start {sortKey === 'startDate' ? (sortAsc ? '▲' : '▼') : ''}
                 </th>
@@ -168,6 +174,7 @@ export default function LeaveDashboard() {
                 <th className="px-4 py-2 text-left" onClick={() => handleSort('status')}>
                   Status {sortKey === 'status' ? (sortAsc ? '▲' : '▼') : ''}
                 </th>
+                <th className="px-4 py-2 text-left">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -187,16 +194,28 @@ export default function LeaveDashboard() {
                           ? 'text-green-600'
                           : req.status === 'pending'
                           ? 'text-yellow-600'
-                          : 'text-red-600'
+                          : req.status === 'rejected'
+                          ? 'text-red-600'
+                          : 'text-gray-600'
                       }`}
                     >
                       {req.status}
+                    </td>
+                    <td className="px-4 py-2">
+                      {req.status === 'pending' && (
+                        <button
+                          onClick={() => handleCancel(req.id)}
+                          className="text-red-600 hover:underline text-sm"
+                        >
+                          Cancel
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={6} className="text-center py-4 text-gray-500">
+                  <td colSpan={7} className="text-center py-4 text-gray-500">
                     No leave history found.
                   </td>
                 </tr>

@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState, ChangeEvent } from 'react';
 import api from '../../api/axios';
-
 interface Role {
   id: number;
   name: string;
@@ -57,8 +56,7 @@ const UsersPage: React.FC = () => {
   const [teams, setTeams] = useState<Team[]>([]);
   const [showForm, setShowForm] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
-
-  // Pagination states
+ 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -262,7 +260,7 @@ const UsersPage: React.FC = () => {
           Add Employee
         </button>
       )}
-
+     
       {/* Add/Edit Form */}
       {showForm && (
         <div

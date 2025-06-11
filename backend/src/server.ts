@@ -15,6 +15,7 @@ import cron from 'node-cron';
 import { carryForwardUnusedLeave } from './Services/carryForwardServices';
 import { roleRoutes } from './Routes/roleRoutes';
 import { summaryRoute } from './Routes/summaryRoutes';
+import { cancelLeaveRoute } from './Routes/leaveCancelRoutes';
 import { approverSummaryRoute } from './Routes/approverSummaryRoute';
 import { leaveHistoryRoutes } from './Routes/leaveHistoryRoutes';
 import { getemployeeRoute } from './Routes/getemployeeRoutes'
@@ -98,6 +99,9 @@ const init = async () => {
   leaveHistoryRoutes(server);
   server.route(summaryRoute);
   server.route(approverSummaryRoute);
+  server.route(cancelLeaveRoute);
+ 
+  
   // register after server is created
   getemployeeRoute(server);
   teamLeaveCalendarRoutes(server);
