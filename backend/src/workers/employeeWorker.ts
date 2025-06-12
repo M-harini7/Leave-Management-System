@@ -82,7 +82,7 @@ AppDataSource.initialize().then(() => {
             if (lt.name.toLowerCase() === 'paternity leave') return emp.gender === 'male';
             return true; // For gender-neutral leave types
           });
-        for (const lt of leaveTypes) {
+        for (const lt of applicableLeaveTypes) {
           leaveBalances.push(
             leaveBalanceRepo.create({
               employee: emp,
