@@ -28,7 +28,7 @@ export  interface JwtPayload {
     id: number;
     email: string;
     role: Role;
-    // add other properties as needed
+   
   }
   export enum Gender {
     Male = 'male',

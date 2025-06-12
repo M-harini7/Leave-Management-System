@@ -34,12 +34,12 @@ export const carryForwardUnusedLeave = async () => {
 
       if (!nextBalance) {
         nextBalance = leaveBalanceRepo.create({
-            employee: { id: balance.employee.id },     // safer than passing full object
+            employee: { id: balance.employee.id },     
             leaveType: { id: leaveType.id },
             year: nextYear,
-            totalDays: unused,                         // ✅ match your entity field
+            totalDays: unused,                       
             usedDays: 0,
-            remainingDays: unused                      // ✅ update if you want to start fresh
+            remainingDays: unused                     
           });
       } else {
         nextBalance.totalDays += unused;

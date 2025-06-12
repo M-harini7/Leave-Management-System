@@ -1,6 +1,6 @@
 import { Request, ResponseToolkit } from '@hapi/hapi';
 import { TeamService } from '../Services/teamServices';
-import { Employee } from '../Entities/Employee';
+
 export class TeamController {
   static async create(req: Request, h: ResponseToolkit) {
     try {

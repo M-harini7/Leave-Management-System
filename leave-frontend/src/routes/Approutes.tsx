@@ -6,7 +6,7 @@ import ManagerDashboard from '../dashboards/ManagerDashboard';
 import TeamLeadDashboard from '../dashboards/TeamleadDashboard';
 import DeveloperDashboard from '../dashboards/DeveloperDashboard'; 
 import ProtectedRoute from '../components/ProtectedRoute';
- // Adjust path if needed
+import BulkUploadPage from '../components/BulkUpload'; // Adjust path if needed
 
 const AppRoutes = () => (
   <Routes>
@@ -50,14 +50,21 @@ const AppRoutes = () => (
     />
 
     <Route
-      path="/dashboards/DeveloperDashboard" // ✅ Added Developer route
+      path="/dashboards/DeveloperDashboard" 
       element={
         <ProtectedRoute allowedRoles={['developer']}>
           <DeveloperDashboard />
         </ProtectedRoute>
       }
     />
-   
+   <Route
+  path="/bulk-upload"
+  element={
+    <ProtectedRoute allowedRoles={['admin', 'hr']}>
+      <BulkUploadPage />
+    </ProtectedRoute>
+  }
+/>
 
   </Routes>
 );

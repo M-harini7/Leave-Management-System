@@ -20,6 +20,7 @@ import { approverSummaryRoute } from './Routes/approverSummaryRoute';
 import { leaveHistoryRoutes } from './Routes/leaveHistoryRoutes';
 import { getemployeeRoute } from './Routes/getemployeeRoutes'
 import { teamLeaveCalendarRoutes } from './Routes/teamLeaveCalendarRoutes';
+import {employeeUploadRoutes}   from './Routes/uploadRoutes';
 config();
 
 const init = async () => {
@@ -42,7 +43,7 @@ const init = async () => {
   // Register JWT plugin
   await server.register(Jwt);
 
-  // ✅ JWT auth strategy with async validation
+
   server.auth.strategy('jwt', 'jwt', {
     keys: process.env.JWT_SECRET || '731f3f5d2a1a2d2f7f387bcc0e4c29b6dfe2589528b97edb0eba96b009078de7',
     verify: {
@@ -100,6 +101,7 @@ const init = async () => {
   server.route(summaryRoute);
   server.route(approverSummaryRoute);
   server.route(cancelLeaveRoute);
+  server.route(employeeUploadRoutes);
  
   
   // register after server is created

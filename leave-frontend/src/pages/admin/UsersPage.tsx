@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, ChangeEvent } from 'react';
 import api from '../../api/axios';
+import { useNavigate } from 'react-router-dom';
 interface Role {
   id: number;
   name: string;
@@ -65,7 +66,7 @@ const UsersPage: React.FC = () => {
   const [filterRole, setFilterRole] = useState('');
   const [filterTeam, setFilterTeam] = useState('');
   const [filterStatus, setFilterStatus] = useState(''); // 'active' / 'inactive' / ''
-
+  const navigate = useNavigate();
   useEffect(() => {
     fetchData();
   }, []);
@@ -260,7 +261,11 @@ const UsersPage: React.FC = () => {
           Add Employee
         </button>
       )}
-     
+      <button
+        onClick={() => navigate('/bulk-upload')}
+        className="bg-green-600 text-white m-5 px-5 py-2 rounded hover:bg-green-700 transition">
+        Bulk Upload
+      </button>
       {/* Add/Edit Form */}
       {showForm && (
         <div
