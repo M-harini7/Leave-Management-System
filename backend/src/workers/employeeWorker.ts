@@ -74,8 +74,14 @@ AppDataSource.initialize().then(() => {
       const savedEmployees = await employeeRepo.save(employeesToSave);
       const leaveTypes = await leaveTypeRepo.find();
       const leaveBalances: LeaveBalance[] = [];
-
+       
       for (const emp of savedEmployees) {
+        const applicableLeaveTypes = leaveTypes.filter((lt) => {
+            // Example condition: add `gender` column in LeaveType to control eligibility
+            if (lt.name.toLowerCase() === 'maternity leave') return emp.gender === 'female';
+            if (lt.name.toLowerCase() === 'paternity leave') return emp.gender === 'male';
+            return true; // For gender-neutral leave types
+          });
         for (const lt of leaveTypes) {
           leaveBalances.push(
             leaveBalanceRepo.create({
