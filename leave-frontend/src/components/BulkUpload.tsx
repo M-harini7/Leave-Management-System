@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import api from '../api/axios';
 
 const BulkUpload = () => {
@@ -7,6 +7,7 @@ const BulkUpload = () => {
   const [isError, setIsError] = useState(false);
   const [warnings, setWarnings] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null); // ✅ Ref for input
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -39,13 +40,18 @@ const BulkUpload = () => {
       if (res.data.warnings && res.data.warnings.length > 0) {
         setWarnings(res.data.warnings);
         setMessage(`Upload completed with ${res.data.warnings.length} warnings.`);
-        setIsError(true); // treated as warning display
+        setIsError(true);
       } else {
         setMessage(res.data.message);
         setIsError(false);
       }
 
+      // ✅ Reset input field
       setFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+
     } catch (err: any) {
       setMessage(`Upload failed: ${err.response?.data?.message || 'Server error'}`);
       setIsError(true);
@@ -59,6 +65,7 @@ const BulkUpload = () => {
       <h2 className="text-2xl font-bold text-gray-800 mb-4">📤 Bulk Upload Employees</h2>
 
       <input
+        ref={fileInputRef} // ✅ Assign ref
         type="file"
         accept=".xlsx, .xls"
         onChange={handleChange}
