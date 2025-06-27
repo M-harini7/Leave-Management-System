@@ -2,6 +2,12 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMan
 import { Employee } from './Employee';
 import { LeaveType } from './LeaveType';
 import { LeaveApproval } from './LeaveApproval';
+export enum LeaveRequestStatus {
+  pending = 'pending',
+  approved = 'approved',
+  rejected = 'rejected',
+  cancelled = 'cancelled'
+}
 
 @Entity()
 export class LeaveRequest {
@@ -28,8 +34,13 @@ export class LeaveRequest {
   @Column({ type: 'text', nullable: true })
   reason?: string;
 
-  @Column({ type: 'varchar', length: 50, default: 'pending' })
-  status!: 'pending' | 'approved' | 'rejected' | 'cancelled';
+  @Column({ 
+    type: 'enum', 
+    enum: LeaveRequestStatus, 
+    default: LeaveRequestStatus.pending 
+  })
+  status!: LeaveRequestStatus;
+  
 
   @CreateDateColumn()
   createdAt!: Date;
@@ -40,7 +51,7 @@ export class LeaveRequest {
   @OneToMany(() => LeaveApproval, approval => approval.leaveRequest)
   approvals!: LeaveApproval[];
 
-  @Column({ type: 'text', nullable: true })
-remarks?: string;
+  @Column({ type: 'text'})
+  remarks?: string;
 
 }

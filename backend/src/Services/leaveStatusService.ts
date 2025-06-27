@@ -1,6 +1,7 @@
 import { AppDataSource } from '../data-sources';
 import { LeaveApproval } from '../Entities/LeaveApproval';
 import { LeaveRequest } from '../Entities/LeaveRequest';
+import { LeaveRequestStatus } from '../Entities/LeaveRequest';
 import { LeaveBalance } from '../Entities/LeaveBalance';
 import { Role } from '../Entities/Role';
 import { Employee } from '../Entities/Employee';
@@ -43,7 +44,7 @@ export async function handleLeaveApprovalAction(
       throw new Error('Insufficient leave balance. Cannot approve this request.');
     }
 
-    leaveApproval.status = 'approved';
+    leaveApproval.status = LeaveRequestStatus.approved;
     if (remarks) leaveApproval.remarks = remarks;
     await leaveApprovalRepo.save(leaveApproval);
 
@@ -58,10 +59,10 @@ export async function handleLeaveApprovalAction(
 
     if (pendingOrRejected) {
       // There are still approvals pending or rejected, so leave request remains pending
-      leaveRequest.status = 'pending';
+      leaveRequest.status = LeaveRequestStatus.pending;
     } else {
       // All approvals approved: finalize leave request
-      leaveRequest.status = 'approved';
+      leaveRequest.status = LeaveRequestStatus.approved;
 
       leaveBalance.usedDays += leaveRequest.totalDays;
       leaveBalance.remainingDays = leaveBalance.totalDays - leaveBalance.usedDays;
@@ -71,11 +72,11 @@ export async function handleLeaveApprovalAction(
     await leaveRequestRepo.save(leaveRequest);
   } else {
     // Reject flow: update this approval and the request immediately
-    leaveApproval.status = 'rejected';
+    leaveApproval.status = LeaveRequestStatus.rejected;
     if (remarks) leaveApproval.remarks = remarks;
     await leaveApprovalRepo.save(leaveApproval);
 
-    leaveRequest.status = 'rejected';
+    leaveRequest.status = LeaveRequestStatus.rejected;
     await leaveRequestRepo.save(leaveRequest);
   }
 

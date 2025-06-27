@@ -9,7 +9,6 @@
     "dev": "nodemon --watch src/**/*.ts --exec ts-node src/server.ts",
     "dev:worker": "nodemon --watch src/workers --ext ts --exec ts-node src/workers/employeeWorker.ts",
     "dev:all": "concurrently \"npm:dev\" \"npm run dev:worker\""
-
   },
   "keywords": [],
   "author": "",
@@ -19,10 +18,12 @@
     "@hapi/hapi": "^21.4.0",
     "@hapi/jwt": "^3.2.0",
     "axios": "^1.9.0",
+    "bcrypt": "^6.0.0",
     "bullmq": "^5.53.2",
     "csv-parser": "^3.2.0",
     "ioredis": "^5.6.1",
     "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
     "node-cron": "^4.1.0",
     "pg": "^8.16.0",
     "reflect-metadata": "^0.2.2",
@@ -30,6 +31,8 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^22.15.23",
     "@types/xlsx": "^0.0.35",
     "nodemon": "^3.1.10",

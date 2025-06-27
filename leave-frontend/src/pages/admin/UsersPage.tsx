@@ -513,51 +513,108 @@ const UsersPage: React.FC = () => {
           </table>
         </div>
 
-        {/* Pagination controls */}
-        {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-3 mt-4 text-sm">
-            <button
-              disabled={currentPage === 1}
-              className={`px-3 py-1 rounded border ${
-                currentPage === 1
-                  ? 'cursor-not-allowed text-gray-400 border-gray-300'
-                  : 'hover:bg-gray-200'
-              }`}
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            >
-              Prev
-            </button>
+       {/* Pagination controls */}
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center gap-1 mt-4 text-sm flex-wrap">
+              <button
+                disabled={currentPage === 1}
+                className={`px-3 py-1 rounded border ${
+                  currentPage === 1
+                    ? 'cursor-not-allowed text-gray-400 border-gray-300'
+                    : 'hover:bg-gray-200'
+                }`}
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              >
+                Prev
+              </button>
 
-            {[...Array(totalPages)].map((_, idx) => {
-              const pageNum = idx + 1;
-              return (
-                <button
-                  key={pageNum}
-                  className={`px-3 py-1 rounded border ${
-                    currentPage === pageNum
-                      ? 'bg-blue-600 text-white border-blue-600'
-                      : 'hover:bg-gray-200'
-                  }`}
-                  onClick={() => setCurrentPage(pageNum)}
-                >
-                  {pageNum}
-                </button>
-              );
-            })}
+              {(() => {
+                const pageButtons = [];
+                const startPage = Math.max(1, currentPage - 2);
+                const endPage = Math.min(totalPages, currentPage + 2);
 
-            <button
-              disabled={currentPage === totalPages}
-              className={`px-3 py-1 rounded border ${
-                currentPage === totalPages
-                  ? 'cursor-not-allowed text-gray-400 border-gray-300'
-                  : 'hover:bg-gray-200'
-              }`}
-              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-            >
-              Next
-            </button>
-          </div>
-        )}
+                // Always show first page
+                if (startPage > 1) {
+                  pageButtons.push(
+                    <button
+                      key={1}
+                      className={`px-3 py-1 rounded border ${
+                        currentPage === 1
+                          ? 'bg-blue-600 text-white border-blue-600'
+                          : 'hover:bg-gray-200'
+                      }`}
+                      onClick={() => setCurrentPage(1)}
+                    >
+                      1
+                    </button>
+                  );
+
+                  if (startPage > 2) {
+                    pageButtons.push(
+                      <span key="start-ellipsis" className="px-2">
+                        ...
+                      </span>
+                    );
+                  }
+                }
+
+                for (let i = startPage; i <= endPage; i++) {
+                  pageButtons.push(
+                    <button
+                      key={i}
+                      className={`px-3 py-1 rounded border ${
+                        currentPage === i
+                          ? 'bg-blue-600 text-white border-blue-600'
+                          : 'hover:bg-gray-200'
+                      }`}
+                      onClick={() => setCurrentPage(i)}
+                    >
+                      {i}
+                    </button>
+                  );
+                }
+
+                if (endPage < totalPages) {
+                  if (endPage < totalPages - 1) {
+                    pageButtons.push(
+                      <span key="end-ellipsis" className="px-2">
+                        ...
+                      </span>
+                    );
+                  }
+
+                  pageButtons.push(
+                    <button
+                      key={totalPages}
+                      className={`px-3 py-1 rounded border ${
+                        currentPage === totalPages
+                          ? 'bg-blue-600 text-white border-blue-600'
+                          : 'hover:bg-gray-200'
+                      }`}
+                      onClick={() => setCurrentPage(totalPages)}
+                    >
+                      {totalPages}
+                    </button>
+                  );
+                }
+
+                return pageButtons;
+              })()}
+
+              <button
+                disabled={currentPage === totalPages}
+                className={`px-3 py-1 rounded border ${
+                  currentPage === totalPages
+                    ? 'cursor-not-allowed text-gray-400 border-gray-300'
+                    : 'hover:bg-gray-200'
+                }`}
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              >
+                Next
+              </button>
+            </div>
+          )}
+
       </div>
     </div>
   );

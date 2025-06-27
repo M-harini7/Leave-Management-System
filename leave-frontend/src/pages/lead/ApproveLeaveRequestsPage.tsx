@@ -78,7 +78,7 @@ export default function LeaveApprovalPage() {
   };
 
   const handleConfirm = async () => {
-    if (!modalData || !remarks) return;
+    if (!modalData ) return;
     try {
       await api.post('/leave-approval/action', {
         leaveApprovalId: modalData.id,

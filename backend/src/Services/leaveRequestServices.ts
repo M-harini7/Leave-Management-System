@@ -1,6 +1,7 @@
 import { AppDataSource } from '../data-sources';
-import { LessThanOrEqual, MoreThanOrEqual, Not } from 'typeorm';
+import { LessThanOrEqual, MoreThanOrEqual, In} from 'typeorm';
 import { LeaveRequest } from '../Entities/LeaveRequest';
+import { LeaveRequestStatus  } from '../Entities/LeaveRequest';
 import { LeaveApproval } from '../Entities/LeaveApproval';
 import { Employee } from '../Entities/Employee';
 import { Role } from '../Entities/Role';
@@ -59,7 +60,7 @@ export const createLeaveRequestWithApprovals = async (
       employee: { id: employee.id },
       startDate: LessThanOrEqual(endDate),
       endDate: MoreThanOrEqual(startDate),
-      status: Not('rejected'),
+      status: In(['approved', 'pending'])
     },
   });
 
@@ -73,7 +74,7 @@ export const createLeaveRequestWithApprovals = async (
     endDate,
     reason,
     totalDays,
-    status: leaveType.autoApprove ? 'approved' : 'pending',
+    status: leaveType.autoApprove ? LeaveRequestStatus.approved : LeaveRequestStatus.pending,
   });
 
   const savedLeaveRequest = await leaveRequestRepo.save(leaveRequest);
@@ -104,7 +105,7 @@ export const createLeaveRequestWithApprovals = async (
       leaveRequest: savedLeaveRequest,
       level: 1,
       role: systemRole ?? undefined,
-      status: 'approved',
+      status: LeaveRequestStatus.approved,
       remarks: 'Auto-approved by system',
     });
 
@@ -142,7 +143,7 @@ export const createLeaveRequestWithApprovals = async (
       leaveRequest: savedLeaveRequest,
       level,
       role,
-      status:'pending', // optionally mark future levels as waiting
+      status:LeaveRequestStatus.pending, // optionally mark future levels as waiting
       approver: approver ?? undefined,
     });
 

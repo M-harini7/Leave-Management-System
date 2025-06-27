@@ -2,6 +2,12 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDa
 import { LeaveRequest } from './LeaveRequest';
 import { Employee } from './Employee';  // Approver
 import { Role } from './Role';
+export enum LeaveRequestStatus {
+  pending = 'pending',
+  approved = 'approved',
+  rejected = 'rejected',
+  cancelled = 'cancelled'
+}
 
 @Entity('leave_approval')
 export class LeaveApproval {
@@ -23,8 +29,13 @@ export class LeaveApproval {
   @Column({ type: 'int' })
   level!: number;
 
-  @Column({ type: 'varchar', length: 20, default: 'pending' })
-  status!: 'pending' | 'approved' | 'rejected';
+  @Column({ 
+    type: 'enum', 
+    enum: LeaveRequestStatus, 
+    default: LeaveRequestStatus.pending 
+  })
+  status!: LeaveRequestStatus;
+  
 
   @Column({ type: 'text', nullable: true })
   remarks?: string| null;
