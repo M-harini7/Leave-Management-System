@@ -1,5 +1,16 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+} from 'typeorm';
 import { ApprovalFlow } from './ApprovalFlow';
+
+export enum AllocationFrequency {
+  YEARLY = 'YEARLY',
+  MONTHLY = 'MONTHLY',
+  QUARTERLY = 'QUARTERLY',
+}
 
 @Entity()
 export class LeaveType {
@@ -21,8 +32,24 @@ export class LeaveType {
   @Column({ type: 'boolean', default: false })
   autoApprove!: boolean;
 
+  @Column({
+    type: 'enum',
+    enum: AllocationFrequency,
+    default: AllocationFrequency.YEARLY,
+  })
+  allocationFrequency!: AllocationFrequency;
+
   @Column({ type: 'boolean', default: false })
-  carryForward!: boolean;
+  isCarryForwardAllowed!: boolean;
+
+  @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
+  carryForwardLimit!: number;
+
+  @Column({ type: 'boolean', default: false })
+  isAutoAllocatable!: boolean;
+
+  @Column({ type: 'decimal', precision: 5, scale: 2, default: 0 })
+  defaultAnnualAllocation!: number;
 
   @Column({ type: 'varchar', nullable: true })
   applicableGender?: 'male' | 'female' | null;

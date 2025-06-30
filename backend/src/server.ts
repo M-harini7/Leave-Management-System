@@ -11,8 +11,6 @@ import { leaveApprovalRoutes } from './Routes/leaveApprovalRoutes';
 import { Employee } from './Entities/Employee'; 
 import { leaveStatusRoutes } from './Routes/leaveStatusRoutes';
 import { holidayRoutes } from './Routes/holidayRoutes';
-import cron from 'node-cron';
-import { carryForwardUnusedLeave } from './Services/carryForwardServices';
 import { roleRoutes } from './Routes/roleRoutes';
 import { summaryRoute } from './Routes/summaryRoutes';
 import { cancelLeaveRoute } from './Routes/leaveCancelRoutes';
@@ -22,6 +20,9 @@ import { getemployeeRoute } from './Routes/getemployeeRoutes'
 import { teamLeaveCalendarRoutes } from './Routes/teamLeaveCalendarRoutes';
 import {employeeUploadRoutes}   from './Routes/uploadRoutes';
 import { resetPasswordRoutes } from "./Routes/resetPasswordRoutes";
+import { runCarryForwardAndAllocationJob } from './Services/carryForwardServices';
+import { startScheduledJobs } from './Services/schedule';
+
 config();
 
 const init = async () => {
@@ -40,7 +41,8 @@ const init = async () => {
 
   await AppDataSource.initialize();
   console.log('DB Connected');
-
+  await runCarryForwardAndAllocationJob();
+  startScheduledJobs();
   // Register JWT plugin
   await server.register(Jwt);
 
@@ -110,11 +112,6 @@ const init = async () => {
   getemployeeRoute(server);
   teamLeaveCalendarRoutes(server);
   await server.start();
-    
-    cron.schedule('0 0 1 1 *', async () => {
-      console.log('🔁 Running scheduled carry forward...');
-      await carryForwardUnusedLeave();
-    });
   
   console.log('🚀 Server running on %s', server.info.uri);
 };

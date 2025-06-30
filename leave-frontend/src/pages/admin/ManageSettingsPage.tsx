@@ -50,6 +50,11 @@ interface LeaveType {
   autoApprove: boolean;
   description?: string;
   applicableGender?: '' | 'male' | 'female';
+  allocationFrequency?: 'YEARLY' | 'MONTHLY' | 'QUARTERLY';
+  isAutoAllocatable?: boolean;
+  defaultAnnualAllocation?: number;
+  isCarryForwardAllowed?: boolean;
+  carryForwardLimit?: number;
 }
 // Union type for form data (partial, as fields differ)
 type FormData = Partial<Team & Role & LeaveType> & { id?: number };
@@ -288,6 +293,71 @@ const ManageSettingsPage: React.FC = () => {
             <option value="male">Male</option>
             <option value="female">Female</option>
           </select>
+          <label className="block font-semibold mb-1 mt-4" htmlFor="allocationFrequency">
+            Allocation Frequency
+          </label>
+          <select
+            id="allocationFrequency"
+            name="allocationFrequency"
+            value={formData.allocationFrequency || 'YEARLY'}
+            onChange={handleInputChange}
+            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+            <option value="YEARLY">Yearly</option>
+            <option value="MONTHLY">Monthly</option>
+            <option value="QUARTERLY">Quarterly</option>
+          </select>
+
+          <label className="block font-semibold mb-1 mt-4" htmlFor="isAutoAllocatable">
+            Auto Allocate Each Year
+          </label>
+          <input
+            id="isAutoAllocatable"
+            name="isAutoAllocatable"
+            type="checkbox"
+            checked={formData.isAutoAllocatable || false}
+            onChange={handleInputChange}
+            className="mr-2"
+          />
+
+          <label className="block font-semibold mb-1 mt-4" htmlFor="defaultAnnualAllocation">
+            Default Annual Allocation
+          </label>
+          <input
+            id="defaultAnnualAllocation"
+            name="defaultAnnualAllocation"
+            type="number"
+            min={0}
+            value={formData.defaultAnnualAllocation ?? ''}
+            onChange={handleInputChange}
+            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+
+          <label className="block font-semibold mb-1 mt-4" htmlFor="isCarryForwardAllowed">
+            Allow Carry Forward
+          </label>
+          <input
+            id="isCarryForwardAllowed"
+            name="isCarryForwardAllowed"
+            type="checkbox"
+            checked={formData.isCarryForwardAllowed || false}
+            onChange={handleInputChange}
+            className="mr-2"
+          />
+
+          <label className="block font-semibold mb-1 mt-4" htmlFor="carryForwardLimit">
+            Carry Forward Limit
+          </label>
+          <input
+            id="carryForwardLimit"
+            name="carryForwardLimit"
+            type="number"
+            min={0}
+            value={formData.carryForwardLimit ?? ''}
+            onChange={handleInputChange}
+            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+
         </>
       );
     }
