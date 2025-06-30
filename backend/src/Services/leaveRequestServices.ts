@@ -1,24 +1,26 @@
 import { AppDataSource } from '../data-sources';
-import { LessThanOrEqual, MoreThanOrEqual, In} from 'typeorm';
-import { LeaveRequest } from '../Entities/LeaveRequest';
-import { LeaveRequestStatus  } from '../Entities/LeaveRequest';
+import { LessThanOrEqual, MoreThanOrEqual, In } from 'typeorm';
+import { LeaveRequest, LeaveRequestStatus } from '../Entities/LeaveRequest';
 import { LeaveApproval } from '../Entities/LeaveApproval';
 import { Employee } from '../Entities/Employee';
 import { Role } from '../Entities/Role';
 import { LeaveType } from '../Entities/LeaveType';
 import { LeaveBalance } from '../Entities/LeaveBalance';
+
 export const createLeaveRequestWithApprovals = async (
   employeeId: number,
   leaveTypeId: number,
   startDate: Date,
   endDate: Date,
-  reason: string
+  reason: string,
+  lastDayHalf: boolean = false
 ) => {
   const leaveRequestRepo = AppDataSource.getRepository(LeaveRequest);
   const leaveApprovalRepo = AppDataSource.getRepository(LeaveApproval);
   const employeeRepo = AppDataSource.getRepository(Employee);
   const roleRepo = AppDataSource.getRepository(Role);
   const leaveTypeRepo = AppDataSource.getRepository(LeaveType);
+
 
   const employee = await employeeRepo.findOne({
     where: { id: employeeId },
@@ -32,9 +34,12 @@ export const createLeaveRequestWithApprovals = async (
   const countWorkingDays = (start: Date, end: Date) => {
     let count = 0;
     const current = new Date(start);
+    current.setHours(0, 0, 0, 0);
+    end = new Date(end);
+    end.setHours(0, 0, 0, 0);
     while (current <= end) {
       const day = current.getDay();
-      if (day !== 0 && day !== 6) count++; // Skip weekends
+      if (day !== 0 && day !== 6) count++;
       current.setDate(current.getDate() + 1);
     }
     return count;
@@ -46,13 +51,37 @@ export const createLeaveRequestWithApprovals = async (
   leaveStart.setHours(0, 0, 0, 0);
 
   if (leaveStart < today) {
-    const workingDaysGap = countWorkingDays(leaveStart, today) - 1; // exclude today
+    const workingDaysGap = countWorkingDays(leaveStart, today) - 1;
     if (workingDaysGap > 5) {
       throw new Error('Leave request cannot be submitted for dates more than 5 working days in the past.');
     }
   }
 
-  const totalDays = countWorkingDays(startDate, endDate);
+  // Always normalize start and end dates to midnight to avoid time component issues
+const start = new Date(startDate);
+const end = new Date(endDate);
+start.setHours(0, 0, 0, 0);
+end.setHours(0, 0, 0, 0);
+
+// Count working days between start and end
+let totalDays = countWorkingDays(start, end);
+
+if (start.getTime() === end.getTime()) {
+  // Single-day leave
+  totalDays = lastDayHalf ? 0.5 : 1;
+} else if (lastDayHalf) {
+  // For multi-day leave, subtract 0.5 only if end date is a weekday
+  const endDay = end.getDay();
+  if (endDay !== 0 && endDay !== 6) {
+    totalDays -= 0.5;
+  } else {
+    console.log('End date is a weekend; skipping half-day adjustment.');
+  }
+}
+
+  if (totalDays <= 0) {
+    throw new Error('Total leave days must be greater than zero.');
+  }
 
   // Check overlapping leaves
   const overlapping = await leaveRequestRepo.findOne({
@@ -60,12 +89,25 @@ export const createLeaveRequestWithApprovals = async (
       employee: { id: employee.id },
       startDate: LessThanOrEqual(endDate),
       endDate: MoreThanOrEqual(startDate),
-      status: In(['approved', 'pending'])
+      status: In(['approved', 'pending']),
     },
   });
-
   if (overlapping) throw new Error('You already have a leave request during this period.');
-
+  const leaveBalanceRepo = AppDataSource.getRepository(LeaveBalance);
+  const balance = await leaveBalanceRepo.findOne({
+    where: {
+      employee: { id: employee.id },
+      leaveType: { id: leaveType.id },
+    },
+  });
+  if (!balance) {
+    throw new Error('Leave balance not found');
+  }
+  
+  //  Check if enough balance
+  if (balance.remainingDays < totalDays) {
+    throw new Error(`Insufficient leave balance. Remaining: ${balance.remainingDays}, Requested: ${totalDays}`);
+  }
   // Create LeaveRequest
   const leaveRequest = leaveRequestRepo.create({
     employee: { id: employeeId },
@@ -80,7 +122,6 @@ export const createLeaveRequestWithApprovals = async (
   const savedLeaveRequest = await leaveRequestRepo.save(leaveRequest);
 
   if (leaveType.autoApprove) {
-    // Auto-approve logic
     const leaveBalanceRepo = AppDataSource.getRepository(LeaveBalance);
     const balance = await leaveBalanceRepo.findOne({
       where: {
@@ -88,7 +129,6 @@ export const createLeaveRequestWithApprovals = async (
         leaveType: { id: leaveType.id },
       },
     });
-
     if (!balance) throw new Error('Leave balance not found');
 
     if (balance.remainingDays < totalDays) {
@@ -99,7 +139,6 @@ export const createLeaveRequestWithApprovals = async (
     balance.remainingDays = balance.totalDays - balance.usedDays;
     await leaveBalanceRepo.save(balance);
 
-    // Insert system auto approval
     const systemRole = await roleRepo.findOneBy({ name: 'System Auto Approval' });
     const autoApproval = leaveApprovalRepo.create({
       leaveRequest: savedLeaveRequest,
@@ -108,12 +147,12 @@ export const createLeaveRequestWithApprovals = async (
       status: LeaveRequestStatus.approved,
       remarks: 'Auto-approved by system',
     });
-
     await leaveApprovalRepo.save(autoApproval);
+
     return savedLeaveRequest;
   }
 
-  // MANUAL APPROVAL FLOW — ONLY CREATE INITIAL APPROVALS HERE
+  // Manual approval flow
   const approvalFlowByRole: Record<string, string[]> = {
     Developer: ['Team Lead', 'Manager', 'HR'],
     'Team Lead': ['Manager', 'HR'],
@@ -143,7 +182,7 @@ export const createLeaveRequestWithApprovals = async (
       leaveRequest: savedLeaveRequest,
       level,
       role,
-      status:LeaveRequestStatus.pending, // optionally mark future levels as waiting
+      status: LeaveRequestStatus.pending,
       approver: approver ?? undefined,
     });
 
@@ -152,6 +191,7 @@ export const createLeaveRequestWithApprovals = async (
 
   return savedLeaveRequest;
 };
+
 export const getAllLeaveRequests = async () => {
   const leaveRepo = AppDataSource.getRepository(LeaveRequest);
   return await leaveRepo.find({

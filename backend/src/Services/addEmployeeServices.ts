@@ -42,16 +42,21 @@ export const createEmployee = async (data: {
   });
 
   const savedEmployee = await employeeRepo.save(newEmployee);
-
   const leaveTypes = await leaveTypeRepo.find();
+  const applicableLeaveTypes = leaveTypes.filter((lt) => {
+    if (lt.applicableGender == null) return true; // 'all'
+    return lt.applicableGender === data.gender;
+  });
 
-  const leaveBalances = leaveTypes.map((lt) =>
+  // Create leave balances
+  const leaveBalances = applicableLeaveTypes.map((lt) =>
     leaveBalanceRepo.create({
       employee: savedEmployee,
       leaveType: lt,
       totalDays: lt.totalDays,
       usedDays: 0,
       remainingDays: lt.totalDays,
+      year: new Date().getFullYear(),
     })
   );
 

@@ -11,6 +11,7 @@ interface LeaveRequestFormData {
   startDate: string;
   endDate: string;
   reason: string;
+  lastDayHalf: boolean;
 }
 
 export default function LeaveRequestForm() {
@@ -20,6 +21,7 @@ export default function LeaveRequestForm() {
     startDate: "",
     endDate: "",
     reason: "",
+    lastDayHalf: false,
   });
   const [message, setMessage] = useState<string>("");
 
@@ -123,6 +125,25 @@ export default function LeaveRequestForm() {
             />
           </div>
         </div>
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            id="lastDayHalf"
+            name="lastDayHalf"
+
+            checked={formData.lastDayHalf}
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                lastDayHalf: e.target.checked,
+              }))
+            }
+            className="h-4 w-4"
+          />
+          <label htmlFor="lastDayHalf" className="text-gray-700 font-medium">
+           Half day
+          </label>
+        </div>
 
         <div>
           <label className="block text-gray-700 font-medium mb-1">Reason</label>
@@ -143,6 +164,7 @@ export default function LeaveRequestForm() {
         >
           Submit Request
         </button>
+
       </form>
 
       {message && (

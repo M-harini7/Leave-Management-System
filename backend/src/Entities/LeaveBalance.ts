@@ -17,15 +17,15 @@ export class LeaveBalance {
   @JoinColumn({ name: 'leaveTypeId' })
   leaveType!: LeaveType;
 
-  @Column({ type: 'int',nullable: true })
-  year!: number; 
+  @Column({ type: 'int', nullable: true })
+  year!: number;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'decimal', precision: 5, scale: 2 })
   totalDays!: number;
 
-  @Column({ type: 'int', default: 0 })
+  @Column({ type: 'decimal', precision: 5, scale: 2, default: 0 })
   usedDays!: number;
 
-  @Column({ type: 'int', default: 0 })
-  remainingDays!: number; // NOW stored in the DB
+  @Column({ type: 'decimal', precision: 5, scale: 2, default: 0 })
+  remainingDays!: number;
 }

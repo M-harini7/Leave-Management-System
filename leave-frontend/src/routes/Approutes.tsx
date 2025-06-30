@@ -7,7 +7,7 @@ import TeamLeadDashboard from '../dashboards/TeamleadDashboard';
 import DeveloperDashboard from '../dashboards/DeveloperDashboard'; 
 import ProtectedRoute from '../components/ProtectedRoute';
 import BulkUploadPage from '../components/BulkUpload'; // Adjust path if needed
-
+import ResetPasswordPage from "../pages/ResetPasswordPage";
 const AppRoutes = () => (
   <Routes>
     <Route path="/" element={<Navigate to="/auth" replace />} />
@@ -65,7 +65,7 @@ const AppRoutes = () => (
     </ProtectedRoute>
   }
 />
-
+<Route path="/reset-password" element={<ResetPasswordPage />} />
   </Routes>
 );
 

@@ -21,6 +21,7 @@ import { leaveHistoryRoutes } from './Routes/leaveHistoryRoutes';
 import { getemployeeRoute } from './Routes/getemployeeRoutes'
 import { teamLeaveCalendarRoutes } from './Routes/teamLeaveCalendarRoutes';
 import {employeeUploadRoutes}   from './Routes/uploadRoutes';
+import { resetPasswordRoutes } from "./Routes/resetPasswordRoutes";
 config();
 
 const init = async () => {
@@ -98,6 +99,7 @@ const init = async () => {
   roleRoutes(server);
   holidayRoutes(server); 
   leaveHistoryRoutes(server);
+  resetPasswordRoutes(server);
   server.route(summaryRoute);
   server.route(approverSummaryRoute);
   server.route(cancelLeaveRoute);

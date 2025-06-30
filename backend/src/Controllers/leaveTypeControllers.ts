@@ -36,10 +36,29 @@ export class LeaveTypeController {
 
   static async getAllLeaveTypes(request: Request, h: ResponseToolkit) {
     try {
-      const leaveTypes = await LeaveTypeService.getAllLeaveTypes();
-      return h.response( leaveTypes ).code(200); 
+      const user = (request as any).user;
+
+      if (!user || !user.employee) {
+        console.error(' No employee found on user:', user);
+        return h.response({ error: 'User employee profile not available' }).code(400);
+      }
+
+      if (!user.employee.gender) {
+        console.error(' Employee gender is missing:', user.employee);
+        return h.response({ error: 'User gender not available' }).code(400);
+      }
+
+      const gender = user.employee.gender as 'male' | 'female';
+
+      
+      const leaveTypes = await LeaveTypeService.getAllLeaveTypes(gender);
+
+      return h.response(leaveTypes).code(200);
     } catch (error) {
+      console.error('Error fetching leave types:', error);
       return h.response({ error: 'Failed to fetch leave types' }).code(500);
     }
   }
+  
+  
 }

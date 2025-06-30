@@ -2,7 +2,7 @@
 import { Request, ResponseToolkit, ServerRoute } from '@hapi/hapi';
 import { AppDataSource } from '../data-sources';
 import { LeaveApproval } from '../Entities/LeaveApproval';
-
+import { LeaveRequestStatus } from '../Entities/LeaveApproval';
 export const approverSummaryRoute: ServerRoute = {
   method: 'GET',
   path: '/approver-summary',
@@ -21,9 +21,9 @@ export const approverSummaryRoute: ServerRoute = {
       const approvalRepo = AppDataSource.getRepository(LeaveApproval);
 
       const [pending, approved, rejected] = await Promise.all([
-        approvalRepo.count({ where: { approver: { id: approverId }, status: 'pending' } }),
-        approvalRepo.count({ where: { approver: { id: approverId }, status: 'approved' } }),
-        approvalRepo.count({ where: { approver: { id: approverId }, status: 'rejected' } }),
+        approvalRepo.count({ where: { approver: { id: approverId }, status: LeaveRequestStatus.pending } }),
+        approvalRepo.count({ where: { approver: { id: approverId }, status: LeaveRequestStatus.approved } }),
+        approvalRepo.count({ where: { approver: { id: approverId }, status: LeaveRequestStatus.rejected } }),
       ]);
 
       return h.response({ pending, approved, rejected });

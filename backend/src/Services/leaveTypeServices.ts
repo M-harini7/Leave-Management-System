@@ -5,6 +5,7 @@ import { Role } from '../Entities/Role';
 import { Employee } from '../Entities/Employee';
 import { LeaveBalance } from '../Entities/LeaveBalance';
 import { FindOptionsWhere } from 'typeorm';
+import { IsNull } from 'typeorm';
 
 export class LeaveTypeService {
   static levelRoleMap: Record<number, string> = {
@@ -171,9 +172,13 @@ export class LeaveTypeService {
     if (!leaveType) throw new Error('Leave Type not found');
     await leaveTypeRepo.remove(leaveType);
   }
-
-  static async getAllLeaveTypes(): Promise<LeaveType[]> {
+  static async getAllLeaveTypes(gender: 'male' | 'female'): Promise<LeaveType[]> {
     const leaveTypeRepo = AppDataSource.getRepository(LeaveType);
-    return await leaveTypeRepo.find();
+    return await leaveTypeRepo.find({
+      where: [
+        { applicableGender: IsNull() },
+        { applicableGender: gender },
+      ],
+    });
   }
 }

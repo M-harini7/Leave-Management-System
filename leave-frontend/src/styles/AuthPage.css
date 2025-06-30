@@ -66,7 +66,11 @@
     font-size: 16px;
     transition: background 0.4s ease;
   }
-  
+  .auth-success {
+    color: green;
+    font-weight: 500;
+    margin-top: 10px;
+  }
   .auth-button:hover {
     background: linear-gradient(to right, #a8892b, #d4af37);
   }
@@ -89,8 +93,8 @@
   .auth-footer button {
     background: none;
     border: none;
-    outline: none;           /* Remove focus outline */
-    box-shadow: none;        /* Remove any shadow */
+    outline: none;           
+    box-shadow: none;        
     color: #ffde6a;
     cursor: pointer;
     text-decoration: underline;
@@ -113,4 +117,24 @@
     from { opacity: 0; transform: scale(0.95); }
     to { opacity: 1; transform: scale(1); }
   }
+  .forgot-password-container {
+    text-align: right;
+    margin-top: -8px;
+    margin-bottom: 12px;
+  }
+  
+  .auth-link {
+    background: none;
+    border: none;
+    color: #ffbb00;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 0;
+  }
+  
+  .auth-link:hover {
+    color: #b3a700;
+  }
+  
   

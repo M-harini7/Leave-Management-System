@@ -30,7 +30,6 @@ export async function handleLeaveApprovalAction(
   if (leaveApproval.status !== 'pending') throw new Error('This leave approval is already processed');
 
   const leaveRequest = leaveApproval.leaveRequest;
-
   if (action === 'approve') {
     const leaveBalance = await leaveBalanceRepo.findOne({
       where: {
@@ -38,42 +37,47 @@ export async function handleLeaveApprovalAction(
         leaveType: { id: leaveRequest.leaveType.id },
       },
     });
-
+  
     if (!leaveBalance) throw new Error('Leave balance record not found');
-    if (leaveBalance.remainingDays < leaveRequest.totalDays) {
+  
+    const requested = parseFloat(leaveRequest.totalDays as any) || 0;
+    const used = parseFloat(leaveBalance.usedDays as any) || 0;
+    const total = parseFloat(leaveBalance.totalDays as any) || 0;
+  
+    if (total - used < requested) {
       throw new Error('Insufficient leave balance. Cannot approve this request.');
     }
-
+  
     leaveApproval.status = LeaveRequestStatus.approved;
     if (remarks) leaveApproval.remarks = remarks;
     await leaveApprovalRepo.save(leaveApproval);
-
-    // Check if all approvals are done (all levels approved)
+  
     const allApprovals = await leaveApprovalRepo.find({
       where: { leaveRequest: { id: leaveRequest.id } },
     });
-
+  
     const pendingOrRejected = allApprovals.find(
       (approval) => approval.status !== 'approved'
     );
-
+  
     if (pendingOrRejected) {
-      // There are still approvals pending or rejected, so leave request remains pending
       leaveRequest.status = LeaveRequestStatus.pending;
     } else {
-      // All approvals approved: finalize leave request
       leaveRequest.status = LeaveRequestStatus.approved;
-
-      leaveBalance.usedDays += leaveRequest.totalDays;
-      leaveBalance.remainingDays = leaveBalance.totalDays - leaveBalance.usedDays;
+  
+      leaveBalance.usedDays = used + requested;
+      leaveBalance.remainingDays = total - leaveBalance.usedDays;
+  
       await leaveBalanceRepo.save(leaveBalance);
     }
-
+  
     await leaveRequestRepo.save(leaveRequest);
-  } else {
+  }
+  
+ else {
     // Reject flow: update this approval and the request immediately
     leaveApproval.status = LeaveRequestStatus.rejected;
-    if (remarks) leaveApproval.remarks = remarks;
+    if (remarks) leaveApproval.remarks = remarks??'';
     await leaveApprovalRepo.save(leaveApproval);
 
     leaveRequest.status = LeaveRequestStatus.rejected;

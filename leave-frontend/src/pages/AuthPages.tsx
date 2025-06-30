@@ -109,6 +109,19 @@ const AuthPage: React.FC = () => {
             onChange={handlePasswordChange}
             className="auth-input"
           />
+          
+          {!isRegister && (
+            <div className="forgot-password-container">
+              <button
+                type="button"
+                className="auth-link"
+                onClick={() => navigate("/reset-password")}
+              >
+                Forgot Password?
+              </button>
+            </div>
+          )}
+          
           <button type="submit" className="auth-button">
             {isRegister ? "Register" : "Login"}
           </button>
@@ -123,10 +136,12 @@ const AuthPage: React.FC = () => {
               <button onClick={switchToLogin}>Login here</button>
             </p>
           ) : (
-            <p>
-              Don’t have an account?{" "}
-              <button onClick={switchToRegister}>Register here</button>
-            </p>
+            <>
+              <p>
+                Don’t have an account?{" "}
+                <button onClick={switchToRegister}>Register here</button>
+              </p>
+            </>
           )}
         </div>
       </div>

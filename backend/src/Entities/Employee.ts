@@ -38,7 +38,7 @@ export class Employee {
   @Column({ default: true })
   isActive!: boolean;
 
-  @OneToOne(() => User, (user) => user.employee)  // inverse side, no @JoinColumn here
+  @OneToOne(() => User, (user) => user.employee)
   user!: User;
 
   @OneToMany(() => LeaveBalance, (lb) => lb.employee)

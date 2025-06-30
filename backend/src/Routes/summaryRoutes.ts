@@ -2,6 +2,7 @@ import { Request, ResponseToolkit, ServerRoute } from '@hapi/hapi';
 import { AppDataSource } from '../data-sources';
 import { Employee } from '../Entities/Employee';
 import { LeaveRequest } from '../Entities/LeaveRequest';
+import { LeaveRequestStatus } from '../Entities/LeaveRequest';
 import { Team } from '../Entities/Team';
 
 export const summaryRoute: ServerRoute = {
@@ -17,8 +18,8 @@ export const summaryRoute: ServerRoute = {
     const inactiveUsers = totalUsers - activeUsers;
 
     const totalLeaveRequests = await leaveRepo.count();
-    const approvedLeaveRequests = await leaveRepo.count({ where: { status: 'approved' } });
-    const rejectedLeaveRequests = await leaveRepo.count({ where: { status: 'rejected' } });
+    const approvedLeaveRequests = await leaveRepo.count({ where: { status: LeaveRequestStatus.approved } });
+    const rejectedLeaveRequests = await leaveRepo.count({ where: { status: LeaveRequestStatus.rejected } });
 
     const totalTeams = await teamRepo.count();
 

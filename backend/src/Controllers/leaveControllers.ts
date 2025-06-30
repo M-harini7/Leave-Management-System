@@ -4,26 +4,38 @@ import { createLeaveRequestWithApprovals } from '../Services/leaveRequestService
 
 export const createLeaveRequest = async (request: Request, h: ResponseToolkit) => {
   try {
-    const { leaveTypeId, startDate, endDate, reason } = request.payload as any;
+    const { leaveTypeId, startDate, endDate, reason, lastDayHalf } = request.payload as any;
     const employeeId = (request.auth.credentials as any).employeeId;
+
+    const normalizedLastDayHalf =
+      lastDayHalf === true ||
+      lastDayHalf === "true" ||
+      lastDayHalf === 1 ||
+      lastDayHalf === "1";
 
     const leaveRequest = await createLeaveRequestWithApprovals(
       employeeId,
       leaveTypeId,
       new Date(startDate),
       new Date(endDate),
-      reason
+      reason,
+      normalizedLastDayHalf
     );
 
-    return h.response({
-      message: 'Leave request submitted successfully',
-      data: leaveRequest,
-    }).code(201);
+    return h
+      .response({
+        message: "Leave request submitted successfully",
+        data: leaveRequest,
+      })
+      .code(201);
   } catch (error: any) {
-    console.error('Error submitting leave request:', error);
-    return h.response({ error: error.message || 'Something went wrong' }).code(500);
+    console.error("Error submitting leave request:", error);
+    return h
+      .response({ error: error.message || "Something went wrong" })
+      .code(500);
   }
 };
+
  export const getAllLeaveRequests = async (request: Request, h: ResponseToolkit) => {
     try {
       const requests = await leaveService.getAllLeaveRequests();

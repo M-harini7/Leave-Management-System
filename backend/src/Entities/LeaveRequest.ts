@@ -28,8 +28,11 @@ export class LeaveRequest {
   @Column({ type: 'date' })
   endDate!: Date;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'decimal', precision: 4, scale: 2 })
   totalDays!: number;
+
+  @Column({ type: 'boolean', default: false })
+lastDayHalf!: boolean;
 
   @Column({ type: 'text', nullable: true })
   reason?: string;
@@ -51,7 +54,7 @@ export class LeaveRequest {
   @OneToMany(() => LeaveApproval, approval => approval.leaveRequest)
   approvals!: LeaveApproval[];
 
-  @Column({ type: 'text'})
+  @Column({ type: 'text', nullable:true})
   remarks?: string;
 
 }
