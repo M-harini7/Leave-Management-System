@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState, ChangeEvent } from 'react';
 import api from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
-interface Role {
+interface IRole {
   id: number;
   name: string;
 }
 
-interface Team {
+interface ITeam {
   id: number;
   name: string;
 }
@@ -15,8 +15,8 @@ interface Employee {
   id: number;
   name: string;
   email?: string;
-  role?: Role | string;
-  team?: Team | string | null;
+  role?: IRole | string;
+  team?: ITeam | string | null;
   isActive: boolean;
   gender?: string;
   joiningDate?: string | null;
@@ -53,8 +53,8 @@ const UsersPage: React.FC = () => {
   const [filteredEmployees, setFilteredEmployees] = useState<Employee[]>([]);
   const [formData, setFormData] = useState<typeof initialForm>(initialForm);
   const [editId, setEditId] = useState<number | null>(null);
-  const [roles, setRoles] = useState<Role[]>([]);
-  const [teams, setTeams] = useState<Team[]>([]);
+  const [roles, setRoles] = useState<IRole[]>([]);
+  const [teams, setTeams] = useState<ITeam[]>([]);
   const [showForm, setShowForm] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
  

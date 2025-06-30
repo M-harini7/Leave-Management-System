@@ -4,7 +4,7 @@ import api from "../api/axios";
 import "../styles/AuthPage.css";
 import { jwtDecode } from "jwt-decode";
 
-interface JwtPayload {
+interface IJwtPayload {
   role?: string;
   name?: string;
   employeeId?: number;
@@ -51,7 +51,7 @@ const AuthPage: React.FC = () => {
         localStorage.setItem("name", name);
         localStorage.setItem("employeeId", String(employeeId));
 
-        const decoded = jwtDecode<JwtPayload>(token);
+        const decoded = jwtDecode<IJwtPayload>(token);
         const userRole = decoded.role?.toLowerCase();
 
         switch (userRole) {

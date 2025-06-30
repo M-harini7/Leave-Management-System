@@ -5,14 +5,14 @@ import MyTotalLeaveBalancePage from '../pages/lead/MyLeaveDetailsPage';
 import LeaveCalendarPage from '../pages/lead/LeaveCalendarPage';
 import ApproveLeaveRequestsPage from '../pages/lead/ApproveLeaveRequestsPage';
 import LeaveRequestFormPage from '../pages/lead/LeaveRequestFormPage';
-interface User {
+interface IUser {
   name: string;
   role: string;
 }
 
 const HrDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('users');
-  const [user, setUser] = useState<User>({ name: '', role: '' });
+  const [user, setUser] = useState<IUser>({ name: '', role: '' });
 
   useEffect(() => {
     const name = localStorage.getItem('name');

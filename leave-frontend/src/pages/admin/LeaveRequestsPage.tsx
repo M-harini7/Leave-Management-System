@@ -3,12 +3,12 @@ import api from '../../api/axios';
 
 const ITEMS_PER_PAGE = 10;
 
-interface Employee {
+interface IEmployee {
   id: number;
   name: string;
 }
 
-interface LeaveType {
+interface ILeaveType {
   id: number;
   name: string;
 }
@@ -17,8 +17,8 @@ type LeaveStatus = 'pending' | 'approved' | 'rejected' | string;
 
 interface LeaveRequest {
   id: number;
-  employee?: Employee | null;
-  leaveType?: LeaveType | null;
+  employee?: IEmployee | null;
+  leaveType?: ILeaveType | null;
   startDate: string;
   endDate: string;
   status: LeaveStatus;
@@ -38,7 +38,7 @@ const LeaveRequestsPage: React.FC = () => {
   const [filtered, setFiltered] = useState<LeaveRequest[]>([]);
   const [statusFilter, setStatusFilter] = useState<LeaveStatus | ''>('');
   const [leaveTypeFilter, setLeaveTypeFilter] = useState<number | ''>('');
-  const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
+  const [leaveTypes, setLeaveTypes] = useState<ILeaveType[]>([]);
   const [search, setSearch] = useState('');
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
@@ -50,7 +50,7 @@ const LeaveRequestsPage: React.FC = () => {
       setRequests(sorted);
       setFiltered(sorted);
     });
-    api.get<LeaveType[]>('/leave-types').then((res) => setLeaveTypes(res.data));
+    api.get<ILeaveType[]>('/leave-types').then((res) => setLeaveTypes(res.data));
   }, []);
 
   useEffect(() => {

@@ -3,14 +3,14 @@ import UsersPage from '../pages/admin/UsersPage';
 import LeaveRequestsPage from '../pages/admin/LeaveRequestsPage';
 import ManageSettingsPage from '../pages/admin/ManageSettingsPage';
 
-interface User {
+interface IUser {
   name: string;
   role: string;
 }
 
 const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('users');
-  const [user, setUser] = useState<User>({ name: '', role: '' });
+  const [user, setUser] = useState<IUser>({ name: '', role: '' });
 
   useEffect(() => {
     const name = localStorage.getItem('name');

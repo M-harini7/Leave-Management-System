@@ -14,14 +14,14 @@ type TabKey =
   | 'leaveRequestForm'
   | 'teamLeaveDetails';
 
-interface UserInfo {
+interface IUserInfo {
   name: string;
   role: string;
 }
 
 const TeamLeadDashboard = () => {
   const [activeTab, setActiveTab] = useState<TabKey>('teamMembers');
-  const [user, setUser] = useState<UserInfo>({ name: '', role: '' });
+  const [user, setUser] = useState<IUserInfo>({ name: '', role: '' });
 
   useEffect(() => {
     const name = localStorage.getItem('name');

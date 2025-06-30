@@ -5,14 +5,14 @@ import LeaveCalendarPage from '../pages/lead/LeaveCalendarPage';
 import LeaveRequestFormPage from '../pages/lead/LeaveRequestFormPage';
 import TeamMemberLeaveDetails from '../pages/lead/TeamLeaveDetailsPage';
 
-interface User {
+interface IUser {
   name: string;
   role: string;
 }
 
 const DeveloperDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('teamMembers');
-  const [user, setUser] = useState<User>({ name: '', role: '' });
+  const [user, setUser] = useState<IUser>({ name: '', role: '' });
 
   useEffect(() => {
     const name = localStorage.getItem('name');

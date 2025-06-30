@@ -7,7 +7,7 @@ const BulkUpload = () => {
   const [isError, setIsError] = useState(false);
   const [warnings, setWarnings] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement | null>(null); // ✅ Ref for input
+  const fileInputRef = useRef<HTMLInputElement | null>(null); //  Ref for input
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -46,7 +46,7 @@ const BulkUpload = () => {
         setIsError(false);
       }
 
-      // ✅ Reset input field
+      //  Reset input field
       setFile(null);
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
@@ -65,7 +65,7 @@ const BulkUpload = () => {
       <h2 className="text-2xl font-bold text-gray-800 mb-4">📤 Bulk Upload Employees</h2>
 
       <input
-        ref={fileInputRef} // ✅ Assign ref
+        ref={fileInputRef} //  Assign ref
         type="file"
         accept=".xlsx, .xls"
         onChange={handleChange}

@@ -3,17 +3,17 @@ import React, { ReactElement } from 'react';
 import { Navigate } from 'react-router-dom';
 import {jwtDecode} from 'jwt-decode';
 
-interface ProtectedRouteProps {
+interface IProtectedRouteProps {
   allowedRoles: string[];
   children: ReactElement;
 }
 
-interface JwtPayload {
+interface IJwtPayload {
   role?: string;
   // add other fields you expect in your JWT payload here
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles, children }) => {
+const ProtectedRoute: React.FC<IProtectedRouteProps> = ({ allowedRoles, children }) => {
   const token = localStorage.getItem('token');
 
   if (!token) {
@@ -22,7 +22,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles, children 
   }
 
   try {
-    const decoded = jwtDecode<JwtPayload>(token);
+    const decoded = jwtDecode<IJwtPayload>(token);
     console.log('[ProtectedRoute] Decoded token:', decoded);
 
     const userRole = decoded.role?.toLowerCase();

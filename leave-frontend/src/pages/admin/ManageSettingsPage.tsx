@@ -2,13 +2,13 @@ import React, { useEffect, useState, Fragment, ChangeEvent, FormEvent } from 're
 import api from '../../api/axios'; 
 import { Dialog, Transition } from '@headlessui/react';
 
-interface ToastProps {
+interface IToastProps {
   message: string;
   type?: 'success' | 'error';
   onClose: () => void;
 }
 
-const Toast: React.FC<ToastProps> = ({ message, type = 'success', onClose }) => (
+const Toast: React.FC<IToastProps> = ({ message, type = 'success', onClose }) => (
   <div
     className={`fixed bottom-4 right-4 px-4 py-2 rounded shadow-lg text-white font-semibold
     ${type === 'error' ? 'bg-red-600' : 'bg-green-600'}`}
@@ -63,7 +63,7 @@ const ManageSettingsPage: React.FC = () => {
   // UI states
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [toast, setToast] = useState<ToastProps | null>(null);
+  const [toast, setToast] = useState<IToastProps | null>(null);
   // Modal state and form data
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [modalMode, setModalMode] = useState<'add' | 'edit'>('add');
